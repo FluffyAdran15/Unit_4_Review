@@ -5,8 +5,8 @@
    Tutorial 11
    Review Assignment
 
-   Author: 
-   Date:   
+   Author: Adrian soliz
+   Date:   03/9/20
 
    Global Variables
    ================
@@ -46,8 +46,115 @@
       the numbers, blocks, and rating parameters.
 	
 */
+//global variables
+var allCells;
+window.onload = startUp;
+// the starting of the page
+function startUp(){
+   document.getElementById('puzzleTitle').innerHTML = "Puzzle 1";
+   document.getElementById('puzzle').innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating);
+
+   var puzzleButton = document.getElementsByClassName('puzzles');
+   for(var i = 0; i<puzzleButton.length; i++){
+      puzzleButton[i].onclick = switchPuzzle;
+   }
+   setupPuzzle(); 
+}
+// function that gose througth all puzzle
+function switchPuzzle(e){
+   //seeing if you want to switch the puzzle
+   if(confirm("You will lose all your work in the puzzle: continue?")){
+   var puzzleID = e.target.id;
+   document.getElementById('puzzleTitle').innerHTML = e.target.value;
+
+// switching the puzzles
+   switch(puzzleID){
+      case ('puzzle1'):
+         document.getElementById('puzzle').innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating)
+         break;
+      case ('puzzle2'):
+            document.getElementById('puzzle').innerHTML = drawHitori(hitori2Numbers, hitori2Blocks, hitori2Rating)
+         break;
+      case ('puzzle3'):
+         document.getElementById('puzzle').innerHTML = drawHitori(hitori3Numbers, hitori3Blocks, hitori3Rating)
+         break;
+
+    }
+   setupPuzzle()
+   }
+
+}
+
+//settin sup the buttons
+function setupPuzzle(){
+  allCells = document.querySelectorAll('table#hitoriGrid td');
+//setting the style
+  for(var i = 0; i< allCells.length; i++){
+   allCells[i].style.backgroundColor = "white";
+   allCells[i].style.color = "black";
+   allCells[i].style.borderRadius = "0";
+
+   allCells[i].addEventListener("mousedown",
+   function(e){
+      if(e.shiftKey){
+         e.target.style.backgroundColor = "white";
+         e.target.style.color = "black"
+         e.target.style.borderRadius = "0"
+      }else if(e.altKey){
+         e.target.style.backgroundColor = "black";
+         e.target.style.color = "white"
+         e.target.style.borderRadius = "0"
+      }else{
+         e.target.style.backgroundColor = "rgb(101, 101, 101)";
+         e.target.style.color = "white"
+         e.target.style.borderRadius = "50%"
+      }
+      e.preventDefault();
+
+   }
 
 
+   )
+// adding the images for the cursors
+   allCells[i].addEventListener("mouseover",
+      function(e){
+         if(e.shiftKey){
+            e.target.style.cursor ="url(jpf_eraser.png), alias"
+         }else if(e.altKey){
+            e.target.style.cursor ="url(jpf_block.png), cell"
+         }else{
+            e.target.style.cursor ="url(jpf_circle.png), pointer"
+         }
+      }
+   
+   )
+
+   allCells[i].addEventListener('mouseup', checkSolution)
+   }
+  }
+//finding all the errors
+  function findErrors(){
+     for(var i = 0; i < allCells.length; i++){
+      if(
+         (allCells[i].className === "blocks" &&  allCells[i].style.backgroundColor === ("rgb(101, 101, 101)") )
+      || 
+         (allCells[i].className === "circles"  &&  allCells[i].style.backgroundColor === ("black"))
+          ) {
+         allCells[i].style.color = "red";
+      }
+      }
+
+      //a peek at the incorrect
+      setTimeout(
+         function(){
+            for(var i = 0; i < allCells.length; i++){
+               if(allCells[i].style.color === "red"){
+                  allCells[i].style.color = "white"
+               }
+            }
+         }
+         , 500);
+   }
 
 
 
